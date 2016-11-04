@@ -1,0 +1,10 @@
+{
+  "title": "Creative Coding Stategies for Musicians",
+  "titleShort": "CCSM",
+  "indexes": [
+    "index.json",
+    "book1_theory/index.json",
+    "book2_practice/index.json",
+    "book3_explore/index.json"
+  ]
+}

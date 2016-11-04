@@ -1,0 +1,94 @@
+body {
+  background-color: #f6f6f6;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+main {
+  width: 50%;
+  margin: 25px auto;
+  padding: 30px;
+
+  background-color: white;
+  color: #333;
+  box-shadow: 0 1px 2px #777;
+}
+
+header {
+  display: block;
+  overflow: hidden;
+  padding: 10px;
+  background-color: #EB6E80;
+  color: white;
+}
+
+header a, header a:visited {
+  text-decoration: none;
+  color: white;
+  font-size: 2rem;
+  vertical-align: middle;
+}
+
+h1,h2,h3 {
+  font-weight: 500;
+}
+
+p {
+  font-size: 17px;
+  line-height: 1.4;
+}
+
+pre {
+  padding: 5px;
+  background-color: #eee;
+  line-height: inherit;
+}
+
+a, a:visited {
+  color: #008F95;
+}
+
+.conceptdemo {
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.conceptdemo form label {
+  vertical-align: top;
+}
+
+.nav-sidebutton {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 20%;
+}
+
+.nav-sidebutton a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: #333;
+  text-align: center;
+}
+
+.nav-sidebutton a:hover {
+  background-color: #eee;
+  box-shadow: inset 0 0 3px black;
+}
+
+.nav-sidebutton a i {
+  position: relative;
+  top: 50%;
+  width: 100%;
+  transform: perspective(1px) translateY(-50%);
+}
+
+.nav-sidebutton.prev {
+  left: 0;
+}
+
+.nav-sidebutton.next {
+  right: 0;
+}
