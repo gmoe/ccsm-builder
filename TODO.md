@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] Table of contents (JSON)
+- [X] Table of contents (JSON)
 - [X] Left/Right navigation
 - [ ] Color scheme
 - [ ] Code tab extension

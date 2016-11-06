@@ -1,74 +1,58 @@
+"use strict";
+
 var gulp        = require('gulp');
+var clean       = require('gulp-clean');
 var frontMatter = require('gulp-front-matter');
 var marked      = require('gulp-markdown');
+var htmlmin     = require('gulp-htmlmin');
 var sass        = require('gulp-sass');
 var rename      = require('gulp-rename');
-var clean       = require('gulp-clean');
 var gutil       = require('gulp-util');
 var webserver   = require('gulp-webserver');
 var nunjucks    = require('nunjucks');
 var path        = require('path');
 var through     = require('through2');
+var fs          = require('fs');
+var fm          = require('front-matter');
+var mkd         = require('marked');
 var vm          = require('vm');
 
 var svgExt = require('./lib/nunjucks/rendersvg-ext.js')(nunjucks);
 var conceptDemoExt = require('./lib/nunjucks/conceptdemo-ext.js')(nunjucks);
 
-var textbook = require('./book.json'); //Overall textbook structure
-var pageOrder = calcPageOrder(); //List of all pages in sequential order, used in navigation
-var toc = calcTableOfContents();
+//Overall textbook structure
+var textbook = require('./book.json');
 
-function calcPageOrder() {
+//List of all pages in sequential order, used in navigation
+var pageOrder = (function() {
   var books = [];
   var re = /(\w+\/)index.json/;
   for(const index of textbook.indexes) {
     var folder = "";
-    try {
-      folder = re.exec(index)[1];
-    } catch(e) {}
+    try { folder = re.exec(index)[1]; } catch(e) {}
     var content = require('./source/'+index).content;
 
     for(var page of content) {
       books.push( folder+page.split('.')[0]+'.html' );
     }
   }
-
   return books;
-}
-
-function calcTableOfContents() {
-  var toc = [];
-  var re = /(w+\/)index.json/;
-  for(const index of textbook.indexes) {
-    var folder = "";
-    try {
-      folder = re.exec(index)[1];
-    } catch(e) {}
-    toc.push(require('./source/'+index)); 
-  }
-  console.log(toc);
-}
+})();
 
 function preProcess() {
   return through.obj(function (file, enc, cb) {
     var nun = new nunjucks.Environment(new nunjucks.FileSystemLoader('templates'));
     nun.addExtension('RenderSvgExtension', new svgExt());
     nun.addExtension('ConceptDemoExtension', new conceptDemoExt());
+
     var res = nun.renderString(file.contents.toString(), textbook);
-    file.contents = new Buffer(res, 'utf8');
-    this.push(file);
-    cb();
+    file.contents = Buffer.from(res, 'utf8');
+    this.push(file); cb();
   });
 }
 
-function applyMetadata() {
+function applyPageMetadata() {
   return through.obj(function (file, enc, cb) {
-  });
-}
-
-function applyTemplate(templateFile) {
-  return through.obj(function (file, enc, cb) {            
-
     var data = {
       title: textbook.title,
       titleShort: textbook.titleShort,
@@ -76,46 +60,92 @@ function applyTemplate(templateFile) {
       content: file.contents.toString()
     };            
 
-    var pageIndex = pageOrder.indexOf(file.relative);
-    if(pageIndex > 0) {
-      data.prev = "/"+pageOrder[pageIndex-1];
-    }
-    if(pageIndex < pageOrder.length-1) {
-      data.next = "/"+pageOrder[pageIndex+1];
+    var pageindex = pageOrder.indexOf(file.relative);
+    if(pageindex > 0) { data.prev = "/"+pageOrder[pageindex-1]; }
+    if(pageindex < pageOrder.length-1) { data.next = "/"+pageOrder[pageindex+1]; }
+
+    file.data = data;
+    this.push(file); cb();
+  });
+}
+
+function applyTocMetadata() {
+  return through.obj(function (file, env, cb) {
+    var json = JSON.parse(file.contents.toString());
+    var out = { 
+      title: textbook.title,
+      titleShort: textbook.titleShort,
+      pageTitle: json.title,
+      toc: [] 
+    };
+
+    //Attach front-matter (titles) to each ToC entry
+    const re = /(\w+\/)index.json/;
+    for(const fileName of json.content) {
+      var folder = "";
+      try { folder = re.exec(file.relative)[1]; } catch(e) {} 
+
+      var atts = fm(fs.readFileSync('./source/'+folder+fileName, 
+        'utf8', function(err, data){ if (err) throw err }));
+
+      out.toc.push({ 
+        file: '/'+folder+fileName,
+        frontMatter: atts.attributes
+      });
     }
 
-    var res = nunjucks.render(templateFile, data);
-    file.contents = new Buffer(res, 'utf8');
-    this.push(file);
-    cb();
+    var pageindex = pageOrder.indexOf(file.relative.split(".")[0]+".html");
+    if(pageindex > 0) { out.prev = "/"+pageOrder[pageindex-1]; }
+    if(pageindex < pageOrder.length-1) { out.next = "/"+pageOrder[pageindex+1]; }
+
+    //Attach related index.md for content
+    var fileName = file.relative.split(".")[0]+".md";
+    var atts = fm(fs.readFileSync('./source/'+fileName, 
+      'utf8', function(err, data){ if (err) throw err }));
+    out.content = mkd(atts.body);
+
+    file.data = out;
+    this.push(file); cb();
+  });
+}
+
+function applyTemplate(templateFile) {
+  return through.obj(function (file, enc, cb) {            
+    var res = nunjucks.render(templateFile, file.data);
+    file.contents = Buffer.from(res, 'utf8');
+    this.push(file); cb();
   });
 }
 
 gulp.task('toc', function() {
   return gulp.src('./source/**/**/*.json')
-    .pipe(buildIndex('./templates/toc.html'))
+    .pipe(applyTocMetadata())
+    .pipe(applyTemplate('./templates/toc.html'))
     .pipe(rename({extname: '.html'}))
+    .pipe(htmlmin({collapseWhitespace: true}))
     .pipe(gulp.dest('build'));
 });
 
+gulp.task('toc:watch', function() {
+  return gulp.watch(['./source/**/**/index.(md|json)', './templates/**/*.html'], 
+    ['toc']);
+});
+
 gulp.task('pages', function () {
-  return gulp.src('./source/**/**/*.md')
-    .pipe(frontMatter({
-      property: 'page',
-      remove: true
-    }))
+  return gulp.src(['./source/**/**/*.md', '!./source/**/**/index.md'])
+    .pipe(frontMatter({ property: 'page', remove: true }))
     .pipe(preProcess())
-    .pipe(marked({
-      gfm: true,
-      smartypants: true 
-    }))
+    .pipe(marked({ gfm: true, smartypants: true }))
+    .pipe(applyPageMetadata())
     .pipe(applyTemplate('./templates/page.html'))
     .pipe(rename({extname: '.html'}))
+    .pipe(htmlmin({collapseWhitespace: true}))
     .pipe(gulp.dest('build'));
 });
 
 gulp.task('pages:watch', function () {
-  gulp.watch(['./source/**/**/*.md', './templates/**/*.html'], ['pages']);
+  gulp.watch(['./source/**/**/*.md', '!./source/**/**/index.md',
+    './templates/**/*.html'], ['pages']);
 });
 
 gulp.task('sass', function () {
@@ -147,6 +177,6 @@ gulp.task('webserver', function() {
     }));
 });
 
-gulp.task('default', ['pages', 'sass', 'copy']);
+gulp.task('default', ['pages', 'sass', 'copy', 'toc']);
 
-gulp.task('serve', ['pages:watch', 'sass:watch', 'copy', 'webserver']);
+gulp.task('serve', ['pages:watch', 'sass:watch', 'toc:watch', 'copy', 'webserver']);

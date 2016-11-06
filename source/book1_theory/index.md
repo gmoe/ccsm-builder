@@ -11,5 +11,3 @@ details you might not be aware of.
 
 If you are an impatient reader, feel free to skip to the next section and come
 back here later.
-
-## Table of Contents

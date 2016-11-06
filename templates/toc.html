@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{ title }} - {{ pageTitle }}</title>
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/lib/d3.min.js"></script>
+  </head>
+  <body>
+    {% if prev %}
+    <div class="nav-sidebutton prev">
+      <a href="{{ prev }}"><i class="fa fa-chevron-left fa-4x"></i></a>
+    </div>
+    {% endif %}
+    {% if next %}
+    <div class="nav-sidebutton next">
+      <a href="{{ next }}"><i class="fa fa-chevron-right fa-4x"></i></a>
+    </div>
+    {% endif %}
+    <main>
+      <header>
+        <a href="/"><i class="fa fa-navicon"></i> {{ title }}</a>
+      </header>
+      {% block content %}
+      <article>
+        {{ content|safe }}
+      </article>
+      {% endblock %}
+      {% block toc %}
+      <article>
+        <h2>Table of Contents</h2>
+        <ul>
+        {% for entry in toc %}
+          <li><a href="{{ entry.file }}">{{ entry.frontMatter.title }}</a></li>
+        {% endfor %}
+        </ul>
+      </article>
+      {% endblock %}
+    </main>
+  </body>
+</html>
