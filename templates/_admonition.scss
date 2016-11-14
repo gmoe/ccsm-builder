@@ -1,0 +1,30 @@
+.admonition {
+  display: inline-block;
+  padding: 5px 15px;
+  width: 95%;
+  margin: 15px auto;
+}
+
+.admonition-title {
+  font-weight: bold;
+}
+
+.admonition-warning {
+  background-color: rgba(241, 159, 77, 0.7);
+  border: 3px solid rgb(241, 159, 77);
+}
+
+.admonition-note {
+  background-color: rgba(0, 143, 149, 0.7);
+  border: 3px solid rgb(0, 143, 149);
+}
+
+.admonition-tip {
+  background-color: rgba(235, 110, 64, 0.7);
+  border: 3px solid rgb(235, 110, 64);
+}
+
+.admonition-important {
+  background-color: rgba(226, 78, 66, 0.7);
+  border: 3px solid rgb(226, 78, 66);
+}

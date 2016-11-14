@@ -15,16 +15,15 @@ var through     = require('through2');
 var fs          = require('fs');
 var fm          = require('front-matter');
 var mkd         = require('marked');
-var vm          = require('vm');
 
-var svgExt = require('./lib/nunjucks/rendersvg-ext.js')(nunjucks);
-var conceptDemoExt = require('./lib/nunjucks/conceptdemo-ext.js')(nunjucks);
+var conceptDemoExt  = require('./lib/nunjucks/conceptdemo-ext.js')(nunjucks);
+var admonitionExt  = require('./lib/nunjucks/admonition-ext.js')(nunjucks);
 
 //Overall textbook structure
 var textbook = require('./book.json');
 
-//List of all pages in sequential order, used in navigation
-var pageOrder = (function() {
+//List of all pages in sequential order; used in navigation
+var pageOrder = (() => {
   var books = [];
   var re = /(\w+\/)index.json/;
   for(const index of textbook.indexes) {
@@ -42,8 +41,8 @@ var pageOrder = (function() {
 function preProcess() {
   return through.obj(function (file, enc, cb) {
     var nun = new nunjucks.Environment(new nunjucks.FileSystemLoader('templates'));
-    nun.addExtension('RenderSvgExtension', new svgExt());
     nun.addExtension('ConceptDemoExtension', new conceptDemoExt());
+    nun.addExtension('AdmonitionExtension', new admonitionExt());
 
     var res = nun.renderString(file.contents.toString(), textbook);
     file.contents = Buffer.from(res, 'utf8');
@@ -89,7 +88,7 @@ function applyTocMetadata() {
         'utf8', function(err, data){ if (err) throw err }));
 
       out.toc.push({ 
-        file: '/'+folder+fileName,
+        file: '/'+folder+fileName.split(".")[0]+".html",
         frontMatter: atts.attributes
       });
     }
@@ -139,7 +138,7 @@ gulp.task('pages', function () {
     .pipe(applyPageMetadata())
     .pipe(applyTemplate('./templates/page.html'))
     .pipe(rename({extname: '.html'}))
-    .pipe(htmlmin({collapseWhitespace: true}))
+    //.pipe(htmlmin({collapseWhitespace: true}))
     .pipe(gulp.dest('build'));
 });
 

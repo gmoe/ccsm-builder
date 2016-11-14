@@ -1,11 +1,16 @@
 # TODO
 
 - [X] Table of contents (JSON)
+- [ ] ToC Hierarchy
+- [X] Admonitions
 - [X] Left/Right navigation
 - [ ] Color scheme
 - [ ] Code tab extension
-- [ ] Static SVG rendering extension
 - [X] Interactive D3/WAA extension
 - [ ] Footnote support
-- [ ] Search support
+- [ ] Search support (lunr.js)
 - [ ] Drop-down ToC
+
+## Blue-sky Ideas
+- [ ] Static SVG rendering Nunjucks extension
+- [ ] Draw Max JSON files with D3 (instead of using screen-caps) 

@@ -127,10 +127,22 @@ which you wish to be displayed literally, ex.: \`foo\`, \*bar\*, etc.
 
 ## Block Extensions
 
-**Render SVG:**
-{% rendersvg %}
-var x = 2 + 2;
-{% endrendersvg %}
+**Admonition:**
+{% admonition "warning", "This Is A Warning!" %}
+For real though, this is a warning.
+{% endadmonition %}
+
+{% admonition "note", "Note" %}
+This is something worth noting
+{% endadmonition %}
+
+{% admonition "tip", "Top Tip" %}
+Tip top top tips!
+{% endadmonition %}
+
+{% admonition "important", "Important" %}
+Don't forget this, please.
+{% endadmonition %}
 
 **Conceptdemo:**
 {% conceptdemo "phasing.js" %}

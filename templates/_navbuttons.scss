@@ -1,0 +1,34 @@
+.nav-sidebutton {
+  position: fixed;
+  top: 0;
+  height: 100%;
+  width: 20%;
+}
+
+.nav-sidebutton a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: #333;
+  text-align: center;
+}
+
+.nav-sidebutton a:hover {
+  background-color: #eee;
+  box-shadow: inset 0 0 3px black;
+}
+
+.nav-sidebutton a i {
+  position: relative;
+  top: 50%;
+  width: 100%;
+  transform: perspective(1px) translateY(-50%);
+}
+
+.nav-sidebutton.prev {
+  left: 0;
+}
+
+.nav-sidebutton.next {
+  right: 0;
+}
