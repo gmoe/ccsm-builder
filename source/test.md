@@ -127,7 +127,20 @@ which you wish to be displayed literally, ex.: \`foo\`, \*bar\*, etc.
 
 ## Block Extensions
 
-**Admonition:**
+### Render SVG
+{% rendersvg "This is a caption. It's also a sphere.", "mySvg" %}
+var svg = d3.select(window.document).select('svg');
+svg.attr('height', 100).attr('width', 100);
+svg.append('circle')
+	.style('stroke', 'gray')
+	.style('fill', 'rgb(241, 159, 77)')
+	.attr('r', 40)
+	.attr('cx', 50)
+	.attr('cy', 50);
+return d3.select(window.document).select('body').html();
+{% endrendersvg %}
+
+### Admonitions
 {% admonition "warning", "This Is A Warning!" %}
 For real though, this is a warning.
 {% endadmonition %}
@@ -144,7 +157,7 @@ Tip top top tips!
 Don't forget this, please.
 {% endadmonition %}
 
-**Conceptdemo:**
+### Conceptdemo:
 {% conceptdemo "phasing.js" %}
 {% endconceptdemo %}
 

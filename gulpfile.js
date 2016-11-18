@@ -16,8 +16,9 @@ var fs          = require('fs');
 var fm          = require('front-matter');
 var mkd         = require('marked');
 
-var conceptDemoExt  = require('./lib/nunjucks/conceptdemo-ext.js')(nunjucks);
 var admonitionExt  = require('./lib/nunjucks/admonition-ext.js')(nunjucks);
+var conceptDemoExt  = require('./lib/nunjucks/conceptdemo-ext.js')(nunjucks);
+var renderSvgExt  = require('./lib/nunjucks/rendersvg-ext.js')(nunjucks);
 
 //Overall textbook structure
 var textbook = require('./book.json');
@@ -43,10 +44,12 @@ function preProcess() {
     var nun = new nunjucks.Environment(new nunjucks.FileSystemLoader('templates'));
     nun.addExtension('ConceptDemoExtension', new conceptDemoExt());
     nun.addExtension('AdmonitionExtension', new admonitionExt());
+    nun.addExtension('RenderSvgExtension', new renderSvgExt());
 
-    var res = nun.renderString(file.contents.toString(), textbook);
-    file.contents = Buffer.from(res, 'utf8');
-    this.push(file); cb();
+    var res = nun.renderString(file.contents.toString(), textbook, (error, parsed) => {
+      file.contents = Buffer.from(parsed, 'utf8');
+      this.push(file); cb();
+    });
   });
 }
 

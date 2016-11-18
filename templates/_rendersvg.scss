@@ -1,0 +1,17 @@
+.diagram {
+  display: inline-block;
+  width: 95%;
+  margin: 15px auto;
+}
+
+.diagram svg {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.diagram-caption {
+  width: 100%;
+  text-align: center;
+  font-style: italic;
+}
