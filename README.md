@@ -15,6 +15,38 @@ generator could conceivably be used by others in creating other websites.
 [d3]: https://d3js.org/
 [todo]: TODO.md
 
+## Installation
+
+This project uses Node to handle package dependencies. Assuming you have
+[npm][npm] installed simply clone down this repository and run `npm install`.
+You will also need [gulp][gulp] to render the site content.
+
+```shell
+git clone https://github.com/gmoe/ccsm-builder
+cd ccsm-builder
+npm install
+gulp && gulp serve
+```
+
+[npm]: https://www.npmjs.com/
+[gulp]: http://gulpjs.com/
+
+## Generation Procedure
+
+This project uses [Gulp][gulp] to handle build tasks, which turns Markdown
+source into static HTML and an [Electron][electron]-based offline app. The
+structure of the textbook is encoded inside of JSON files that describe chapter
+hierarchy and page order. The rendered Markdown is then threaded through
+[Nunjucks][nunjucks] templates paired with the JSON data. In the future,
+additional Nunjucks templates will be added for ePub generation.
+
+* `gulp`: Render the book into static HTML
+* `gulp serve`: Host static content on port 8000. Content dynamically renders
+  on source changes
+
+[electron]: http://electron.atom.io/
+[nunjucks]: https://mozilla.github.io/nunjucks/
+
 ## Directives
 
 ### Admonitions
