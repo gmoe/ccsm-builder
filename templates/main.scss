@@ -98,6 +98,18 @@ th, td {
   padding: 10px;
 }
 
+img {
+  display: block;
+  width: 75%;
+  height: auto;
+  margin: 15px auto;
+}
+
+blockquote {
+  border-left: 3px solid #F19F4d;
+  padding-left: 15px;
+}
+
 .conceptdemo {
   width: 90%;
   margin-left: auto;
@@ -109,6 +121,17 @@ th, td {
   vertical-align: top;
 }
 
+.conceptdemo form input {
+  margin: auto 5px auto 15px;
+}
+
+.conceptdemo form input[type=checkbox] {
+  width: 20px;
+  height: 20px;
+  vertical-align: top;
+}
+
 @import 'admonition';
 @import 'navbuttons';
 @import 'rendersvg';
+@import 'codetabs';

@@ -17,8 +17,9 @@ var fm          = require('front-matter');
 var mkd         = require('marked');
 
 var admonitionExt  = require('./lib/nunjucks/admonition-ext.js')(nunjucks);
-var conceptDemoExt  = require('./lib/nunjucks/conceptdemo-ext.js')(nunjucks);
-var renderSvgExt  = require('./lib/nunjucks/rendersvg-ext.js')(nunjucks);
+var codeTabsExt    = require('./lib/nunjucks/codetabs-ext.js')(nunjucks);
+var conceptDemoExt = require('./lib/nunjucks/conceptdemo-ext.js')(nunjucks);
+var renderSvgExt   = require('./lib/nunjucks/rendersvg-ext.js')(nunjucks);
 
 //Overall textbook structure
 var textbook = require('./book.json');
@@ -42,11 +43,13 @@ var pageOrder = (() => {
 function preProcess() {
   return through.obj(function (file, enc, cb) {
     var nun = new nunjucks.Environment(new nunjucks.FileSystemLoader('templates'));
-    nun.addExtension('ConceptDemoExtension', new conceptDemoExt());
     nun.addExtension('AdmonitionExtension', new admonitionExt());
+    nun.addExtension('CodeTabsExtension', new codeTabsExt());
+    nun.addExtension('ConceptDemoExtension', new conceptDemoExt());
     nun.addExtension('RenderSvgExtension', new renderSvgExt());
 
     var res = nun.renderString(file.contents.toString(), textbook, (error, parsed) => {
+      if(error) { throw error }
       file.contents = Buffer.from(parsed, 'utf8');
       this.push(file); cb();
     });
@@ -119,7 +122,7 @@ function applyTemplate(templateFile) {
   });
 }
 
-gulp.task('toc', function() {
+gulp.task('toc', () => {
   return gulp.src('./source/**/**/*.json')
     .pipe(applyTocMetadata())
     .pipe(applyTemplate('./templates/toc.html'))
@@ -128,12 +131,12 @@ gulp.task('toc', function() {
     .pipe(gulp.dest('build'));
 });
 
-gulp.task('toc:watch', function() {
+gulp.task('toc:watch', () => {
   return gulp.watch(['./source/**/**/index.(md|json)', './templates/**/*.html'], 
     ['toc']);
 });
 
-gulp.task('pages', function () {
+gulp.task('pages', () => {
   return gulp.src(['./source/**/**/*.md', '!./source/**/**/index.md'])
     .pipe(frontMatter({ property: 'page', remove: true }))
     .pipe(preProcess())
@@ -145,22 +148,22 @@ gulp.task('pages', function () {
     .pipe(gulp.dest('build'));
 });
 
-gulp.task('pages:watch', function () {
+gulp.task('pages:watch', () => {
   gulp.watch(['./source/**/**/*.md', '!./source/**/**/index.md',
     './templates/**/*.html'], ['pages']);
 });
 
-gulp.task('sass', function () {
+gulp.task('sass', () => {
   return gulp.src('./templates/**/*.scss')
     .pipe(sass().on('error', sass.logError))
     .pipe(gulp.dest('./build/css'));
 });
 
-gulp.task('sass:watch', function () {
+gulp.task('sass:watch', () => {
   gulp.watch('./templates/**/*.scss', ['sass']);
 });
 
-gulp.task('copy', function () {
+gulp.task('copy', () =>{
   gulp.src('./node_modules/font-awesome/fonts/*')
     .pipe(gulp.dest('./build/fonts/'));
   gulp.src('./node_modules/font-awesome/css/font-awesome.min.css')
@@ -171,11 +174,11 @@ gulp.task('copy', function () {
     .pipe(gulp.dest('./build'));
 });
 
-gulp.task('webserver', function() {
+gulp.task('webserver', () => {
   gulp.src('build')
     .pipe(webserver({
-      livereload: true,
-      open: true
+      livereload: true
+      //open: true
     }));
 });
 

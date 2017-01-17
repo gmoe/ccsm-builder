@@ -5,7 +5,7 @@
 - [X] Admonitions
 - [X] Left/Right navigation
 - [ ] Color scheme
-- [ ] Code tab extension
+- [X] Code tab extension
 - [X] Interactive D3/WAA extension
 - [X] Static SVG rendering Nunjucks extension
 - [ ] Footnote support

@@ -1,0 +1,60 @@
+.codetabs > input{
+  display: none;
+}
+
+.codetabs > input:not(:checked) + section > pre {
+  display: none;
+}
+
+.codetabs > section > h1{
+  float: left;
+}
+
+.codetabs > section > pre {
+  float: right;
+  width: 100%;
+  margin: 2.0em 0 0 -100%;
+}
+
+.codetabs {
+  display: block;
+  float: left;
+  width: 95%;
+  margin: 0 auto 25px auto;
+}
+
+.codetabs > section > h1 > label {
+  display: block;
+  cursor: pointer;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+}
+
+.codetabs > section > h1 {
+  box-sizing: border-box;
+  //margin: 3px 0 0 0;
+  //padding: 0.5em 0.5em 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-size: 1em;
+  font-weight: normal;
+
+  &:not(:first-child) {
+    background-color: red;
+  }
+}
+
+.codetabs > section > h1 > label{
+  display                 : block;
+  padding                 : 0.25em 0.75em;
+  border                  : 1px solid #ddd;
+  border-bottom           : none;
+  background              : #fff;
+}
+
+.codetabs > input:checked + section > h1 > label {
+  background-color: #008F95;
+  color: white;
+} 

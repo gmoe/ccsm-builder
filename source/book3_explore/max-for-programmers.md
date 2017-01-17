@@ -91,6 +91,11 @@ least once.
   and if necessary apply minimum and maximum values.
 * Create an interface in Presentation mode for use in `bpatchers`!
 
+### Encapsulation
+
+* Look into `pvar`
+* Look into `pv`
+
 ### bpatcher
 
 The `bpatcher` object exposes the logic of an abstraction by providing a

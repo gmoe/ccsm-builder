@@ -111,21 +111,33 @@ A horizontal rule follows.
 
 Images can be specified like so:
 
-![example image](example-image.jpg "An exemplary image")
+![example image](book1_theory/sine.png "An exemplary image")
 
-Inline math equations go in like so: $\omega = d\phi / dt$. Display
+Inline math equations go in like so: \`(\omega = d\phi / dt)\`. Display
 math should get its own line and be put in in double-dollarsigns:
 
 $$I = \int \rho R^{2} dV$$
 
 And note that you can backslash-escape any punctuation characters
-which you wish to be displayed literally, ex.: \`foo\`, \*bar\*, etc.
+which you wish to be displayed literally, ex.: \*bar\*.
 
 # Data and Custom Directives
 
 * Read variables from JSON: *{{ title }}* / {{ titleShort }}
 
 ## Block Extensions
+
+### Code Tabs
+
+{% codetabs "sc", "faust", "max" %}
+play{ SinOsc.ar(440).dup\*0.1 }
+{% lang %}
+random = +(12345) ~ \*(1103515245); // overflowing mpy & offset
+RANDMAX = 2147483647.0;
+noise = random / RANDMAX;
+{% lang %}
+Max code here.
+{% endcodetabs %}
 
 ### Render SVG
 {% rendersvg "This is a caption. It's also a sphere.", "mySvg" %}
@@ -160,4 +172,3 @@ Don't forget this, please.
 ### Conceptdemo:
 {% conceptdemo "phasing.js" %}
 {% endconceptdemo %}
-
