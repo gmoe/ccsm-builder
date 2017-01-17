@@ -1,5 +1,6 @@
 # TODO
 
+- [ ] Separate content from generator
 - [X] Table of contents (JSON)
 - [ ] ToC Hierarchy
 - [X] Admonitions
